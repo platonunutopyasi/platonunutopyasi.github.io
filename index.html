@@ -66,10 +66,10 @@
 </head>
 <body>
 <table>
-<tr><td>Entry No</td><td>
+<tr><td>Giri No:</td><td>
 <input id='entryNoInput' type="number" name="entry" value="1">
 </td></tr>
-<tr><td><button id='goButton' onclick='doIt()'>Go!</button></td>
+<tr><td><button id='goButton' onclick='doIt()'>Say!</button></td>
 <td></td>
 </tr></table>
 <br/>
@@ -105,7 +105,7 @@
   
   function createTable(entry){
     var table = "<table><tr><th>Başlık</th><th>İçerik</th><th>Yazan</th><th>Resmi</th></tr><tr><td>"+entry.info.title.title+"</td><td>"+entry.entries[0].entry+"</td><td>"+entry.entries[0].user.username+"</td><td><img src='"+entry.entries[0].user.avatar+"'/></td></tr>";
-    table += "<tr><td>Favorites</td></tr>";
+    table += "<tr><td>Favorileyenler</td></tr>";
     for(var i = 0; i < entry.favourites.length;i++){
         table += "<tr><td></td><td>"+entry.favourites[i].user.username+"</td><td><img src='"+entry.favourites[i].user.avatar+"'/></td></tr>";
     }
