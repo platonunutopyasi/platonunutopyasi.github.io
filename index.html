@@ -1,0 +1,129 @@
+
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" href="https://instela--static-info.cdn.ampproject.org/i/s/instela-static.info/s/avatar/dzvsbqqyfqenjynutqbzgz7rzroagmubqha61rt7690goj4vug.t.jpg">
+  <title>Fav checker</title>
+  <meta name="description" content="Favori Sayar">
+  <meta name="author" content="Pnd">
+  <style>
+  /* Center tables for demo */
+  table {
+    margin: 0 auto;
+  }
+
+  /* Default Table Style */
+  table {
+    color: #333;
+    background: white;
+    border: 1px solid grey;
+    font-size: 12pt;
+    border-collapse: collapse;
+  }
+  table thead th,
+  table tfoot th {
+    color: #777;
+    background: rgba(0,0,0,.1);
+  }
+  table caption {
+    padding:.5em;
+  }
+  table th,
+  table td {
+    padding: .5em;
+    border: 1px solid lightgrey;
+  }
+  /* Zebra Table Style */
+  [data-table-theme*=zebra] tbody tr:nth-of-type(odd) {
+    background: rgba(0,0,0,.05);
+  }
+  [data-table-theme*=zebra][data-table-theme*=dark] tbody tr:nth-of-type(odd) {
+    background: rgba(255,255,255,.05);
+  }
+  /* Dark Style */
+  [data-table-theme*=dark] {
+    color: #ddd;
+    background: #333;
+    font-size: 12pt;
+    border-collapse: collapse;
+  }
+  [data-table-theme*=dark] thead th,
+  [data-table-theme*=dark] tfoot th {
+    color: #aaa;
+    background: rgba(0255,255,255,.15);
+  }
+  [data-table-theme*=dark] caption {
+    padding:.5em;
+  }
+  [data-table-theme*=dark] th,
+  [data-table-theme*=dark] td {
+    padding: .5em;
+    border: 1px solid grey;
+  }
+  </style>
+</head>
+<body>
+<table>
+<tr><td>Entry No</td><td>
+<input id='entryNoInput' type="number" name="entry" value="1">
+</td></tr>
+<tr><td><button id='goButton' onclick='doIt()'>Go!</button></td>
+<td></td>
+</tr></table>
+<br/>
+<div id="result">
+
+</div>
+  <script>
+  function doIt(event){
+    var entryNo = document.getElementById('entryNoInput').value;
+    getEntry(entryNo, function(entry){
+      if(entry.message){
+        document.getElementById('result').innerHTML = "entry yoh!";
+      }
+      getFavorites(entry, function(filledEntry){
+        createTable(filledEntry);
+      })
+    })
+  }
+  
+  function getEntry(entryId, callback){
+    var url = "https://tr.instela.com/api/v2/entries/" + entryId;
+    doGetRequest(url, callback);
+  }
+  
+  function getFavorites(entry, callback){
+    var entry = entry;
+    var url = "https://tr.instela.com/api/v2/entries/" + entry.entries[0].id + "/favourites";
+    doGetRequest(url, function(result){
+      entry.favourites = result.favourites;
+      callback(entry);
+    });
+  }
+  
+  function createTable(entry){
+    var table = "<table><tr><th>Başlık</th><th>İçerik</th><th>Yazan</th><th>Resmi</th></tr><tr><td>"+entry.info.title.title+"</td><td>"+entry.entries[0].entry+"</td><td>"+entry.entries[0].user.username+"</td><td><img src='"+entry.entries[0].user.avatar+"'/></td></tr>";
+    table += "<tr><td>Favorites</td></tr>";
+    for(var i = 0; i < entry.favourites.length;i++){
+        table += "<tr><td></td><td>"+entry.favourites[i].user.username+"</td><td><img src='"+entry.favourites[i].user.avatar+"'/></td></tr>";
+    }
+    table += "</table>"
+    
+    document.getElementById('result').innerHTML = table;
+  }
+  
+  function doGetRequest(url, callback){
+    function reqListener () {
+      callback(JSON.parse(this.responseText));
+    }
+
+    var oReq = new XMLHttpRequest();
+    oReq.addEventListener("load", reqListener);
+    oReq.open("GET", url);
+    oReq.send();
+  }
+  </script>
+</body>
+</html>
